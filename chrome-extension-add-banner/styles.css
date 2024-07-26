@@ -1,0 +1,23 @@
+#custom-banner {
+  position: fixed;
+  bottom: 50px;  
+  left: 0;
+  width: 100%;
+  background-color: transparent;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  font-size: x-large;
+  padding: 10px;
+  z-index: 1000;
+  animation: scroll-up 20s linear infinite;
+}
+
+@keyframes scroll-up {
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(-100%);
+  }
+}

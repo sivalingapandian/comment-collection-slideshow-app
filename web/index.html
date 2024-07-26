@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Sender</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f8ff; /* Light blue background color */
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 300px;
+        }
+
+        input,
+        button {
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        #message {
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            align-items: center;
+            color: #333; /* Darker text color */
+        }
+        img {
+            max-width: 100px; /* Adjust the size of the image */
+            margin-bottom: 20px;
+        }
+        emoji-picker {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <img src="party.jpg" alt="Logo">
+    <h1>Send your slideshow comments!</h1>
+    <div id="message"></div>
+    <form id="messageForm">
+        <input type="text" id="name" placeholder="Enter your name" required>
+        <input type="text" id="text" placeholder="Enter your message" required>
+        <button type="submit" id="sendButton" disabled>Send</button>
+    </form>
+    <emoji-picker></emoji-picker>
+
+    <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const nameInput = document.getElementById('name');
+            const textInput = document.getElementById('text');
+            const sendButton = document.getElementById('sendButton');
+            const messageDiv = document.getElementById('message');
+            const emojiPicker = document.querySelector('emoji-picker');
+            const apiURL = 'https://*.*.us-east-1.amazonaws.com/default/messageAPI';
+
+            function validateInputs() {
+                if (nameInput.value && textInput.value) {
+                    sendButton.disabled = false;
+                } else {
+                    sendButton.disabled = true;
+                }
+            }
+
+            nameInput.addEventListener('input', validateInputs);
+            textInput.addEventListener('input', validateInputs);
+
+            emojiPicker.addEventListener('emoji-click', (event) => {
+                textInput.value += event.detail.unicode;
+                validateInputs();
+            });
+
+            document.getElementById('messageForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                sendButton.disabled = true;
+
+                const data = {
+                    name: nameInput.value,
+                    text: textInput.value
+                };
+
+                try {
+                    const myHeaders = new Headers();
+                    myHeaders.append("Content-Type", "application/json");
+                    myHeaders.append("Accept","application/json");
+
+                    const response = await fetch(apiURL, {
+                        method: 'POST',
+                        headers: myHeaders,
+                        body: JSON.stringify(data)
+                    });
+
+                    if (response.ok) {
+                        messageDiv.innerText = "Hooray";
+                        messageDiv.style.color = "green";
+                        textInput.value = ""; // Clear the text field
+                    } else {
+                        throw new Error('Network response was not ok');
+                    }
+                } catch (error) {
+                    messageDiv.innerText = "Hole in cloud";
+                    messageDiv.style.color = "red";
+                }
+
+                // Clear the messageDiv message after 10 seconds
+                setTimeout(() => {
+                    messageDiv.innerText = "";
+                }, 10000); // 10 seconds
+
+                setTimeout(() => {
+                    sendButton.disabled = false;
+                }, 60000); // 1 minute
+            });
+        });
+    </script>
+</body>
+
+</html>
