@@ -9,4 +9,7 @@ Chrome upgrade or Node upgrade or Javascript can break this, so you may need to 
 1. [chrome-extension-add-banner](/chrome-extension-add-banner/) folder contains [readme.md](/chrome-extension-add-banner/readme.md) to setup chrome extension locally
 2. [lambda](/lambda/) folder contains [readme.md](/lambda/readme.md) to setup AWS lambda
 3. [web](/web/) folder contains [readme.md](/web/readme.md) to setup single page application using AWS s3
-4. [VideoOverlayApp](/VideoOverlayApp-ext/) folder for creating macOS app and load video content directly from mac
+4. [MacOS App](/VideoOverlayApp-ext/) folder contains app development of macos for videooverlay
+
+Find AI [prompt](/ai-prompt/chrome-extension-development.pdf) file to understand how this program evolved
+

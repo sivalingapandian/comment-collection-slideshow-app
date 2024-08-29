@@ -45,6 +45,11 @@
             max-width: 100px; /* Adjust the size of the image */
             margin-bottom: 20px;
         }
+        #timer {
+            font-size: 14px;
+            color: #333;
+            margin-top: 10px;
+        }
         emoji-picker {
             margin-top: 10px;
         }
@@ -56,10 +61,11 @@
     <h1>Send your slideshow comments!</h1>
     <div id="message"></div>
     <form id="messageForm">
-        <input type="text" id="name" placeholder="Enter your name" required>
-        <input type="text" id="text" placeholder="Enter your message" required>
+        <input type="text" id="name" placeholder="Enter your name" maxlength="20" required>
+        <input type="text" id="text" placeholder="Enter your message" maxlength="200" required>
         <button type="submit" id="sendButton" disabled>Send</button>
     </form>
+    <div id="timer"></div>
     <emoji-picker></emoji-picker>
 
     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
@@ -69,11 +75,13 @@
             const textInput = document.getElementById('text');
             const sendButton = document.getElementById('sendButton');
             const messageDiv = document.getElementById('message');
+            const timerDiv = document.getElementById('timer');
             const emojiPicker = document.querySelector('emoji-picker');
             const apiURL = 'https://*.*.us-east-1.amazonaws.com/default/messageAPI';
 
+            let timerrunning = false;
             function validateInputs() {
-                if (nameInput.value && textInput.value) {
+                if (nameInput.value && textInput.value && !timerrunning) {
                     sendButton.disabled = false;
                 } else {
                     sendButton.disabled = true;
@@ -125,9 +133,22 @@
                     messageDiv.innerText = "";
                 }, 10000); // 10 seconds
 
-                setTimeout(() => {
-                    sendButton.disabled = false;
-                }, 60000); // 1 minute
+                // Start the timer
+                let countdown = 30; // 30 secs
+                timerDiv.innerText = `You can send another message in ${countdown} second(s).`;
+                const interval = setInterval(() => {
+                    countdown--;
+                    if (countdown <= 0) {
+                        clearInterval(interval);
+                        timerrunning = false;
+                        validateInputs();
+                        timerDiv.innerText = "";
+                    } else {
+                        timerDiv.innerText = `You can send another message in ${countdown} second(s).`;
+                        timerrunning = true;
+                        validateInputs();
+                    }
+                }, 1000);
             });
         });
     </script>
